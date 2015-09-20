@@ -1,0 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".FirstActivity">
+    <item
+        android:id="@+id/add_item"
+        android:title="@string/Add"
+        android:orderInCategory="100"
+        android:showAsAction="never" />
+    <item
+        android:id="@+id/remove_item"
+        android:title="Reomve"/>
+</menu>

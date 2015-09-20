@@ -1,0 +1,9 @@
+Enter a number: 
+Enter a number: 
+Enter a number: 
+Enter a number: 
+Enter a number: 
+Enter a number: 
+Enter a number: 
+Enter a number: 
+The sum is 282 !
