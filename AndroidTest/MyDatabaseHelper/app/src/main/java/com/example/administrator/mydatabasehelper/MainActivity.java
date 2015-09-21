@@ -48,6 +48,16 @@ public class MainActivity extends Activity {
 
             }
         });
+        Button upgradeData = (Button) findViewById(R.id.upgrade_price);
+        upgradeData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SQLiteDatabase db = dbHelper.getWritableDatabase();
+                ContentValues values = new ContentValues();
+                values.put("prices",10.99);
+                db.update("Book",values,"name=?",new String[]{"The Da Vinci Code"});
+            }
+        });
     }
 
     @Override
