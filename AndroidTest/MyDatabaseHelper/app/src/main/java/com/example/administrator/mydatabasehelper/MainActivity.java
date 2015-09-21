@@ -56,6 +56,31 @@ public class MainActivity extends Activity {
                 db.delete("Book","pages>?",new String[]{"500"});
             }
         });
+        Button replaceData = (Button) findViewById(R.id.replace_data);
+        replaceData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SQLiteDatabase db = dbHelper.getWritableDatabase();
+                db.beginTransaction();
+                try{
+                    db.delete("Book",null,null);
+                    if (true){
+                        throw new NullPointerException();
+                    }
+                    ContentValues values = new ContentValues();
+                    values.put("name","Game of Thrones");
+                    values.put("author","George Martin");
+                    values.put("pages",720);
+                    values.put("price",20.85);
+                    db.insert("Book", null, values);
+                    db.setTransactionSuccessful();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }finally {
+                    db.endTransaction();
+                }
+            }
+        });
     }
 
     @Override
