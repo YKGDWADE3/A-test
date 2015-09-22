@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
@@ -50,6 +51,11 @@ public class MainActivity extends Activity {
                         notification.sound = soundUri;//add sound
                         long[] vibrates = {0,1000,1000,1000};//不震，震，不震，震.....
                         notification.vibrate = vibrates;//add shake
+                        notification.ledARGB = Color.BLUE;
+                        notification.ledOnMS=1000;
+                        notification.ledOffMS=1000;
+                        notification.flags = Notification.FLAG_SHOW_LIGHTS;
+                        //notification.defaults = Notification.DEFAULT_ALL;铃声震动闪灯全默认
 
                         manager.notify(1, notification);
                         break;
