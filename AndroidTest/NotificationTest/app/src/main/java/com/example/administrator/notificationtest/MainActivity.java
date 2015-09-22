@@ -30,16 +30,18 @@ public class MainActivity extends Activity {
                     case R.id.notification:
                         NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                         Intent intent = new Intent(MainActivity.this,NotificationActivity.class);
+                        //新建一个intent，希望能触发一个活动
                         PendingIntent pi = PendingIntent.getActivity(MainActivity.this,0,intent,PendingIntent.FLAG_CANCEL_CURRENT);
-
+                        //新建一个PendingIntent
+                        //下面是更新后的notification新建对象方法
                         Notification notification = new Notification.Builder(MainActivity.this)
-                                .setAutoCancel(true)
-                                .setWhen(System.currentTimeMillis())
-                                .setContentTitle("This is contentFile")
-                                .setContentText("This is contentText")
-                                .setSmallIcon(R.mipmap.ic_launcher)
-                                .setTicker("This is ticker")
-                                .setContentIntent(pi)
+                                .setAutoCancel(true)//能否拒绝，就是滑动消除
+                                .setWhen(System.currentTimeMillis())//触发时间
+                                .setContentTitle("This is contentFile")//下拉通知栏标题
+                                .setContentText("This is contentText")//下拉通知栏内容
+                                .setSmallIcon(R.mipmap.ic_launcher)//状态栏的小图标
+                                .setTicker("This is ticker")//状态栏内容
+                                .setContentIntent(pi)//点击通知栏触发事件
                                 .build();
 
                         manager.notify(1,notification);
