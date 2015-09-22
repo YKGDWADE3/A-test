@@ -6,11 +6,14 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+
+import java.io.File;
 
 public class MainActivity extends Activity {
     private Button sendNotice;
@@ -43,8 +46,12 @@ public class MainActivity extends Activity {
                                 .setTicker("This is ticker")//状态栏内容
                                 .setContentIntent(pi)//点击通知栏触发事件
                                 .build();
+                        Uri soundUri = Uri.fromFile(new File("/system/media/audio/ringtones/air.ogg"));
+                        notification.sound = soundUri;//add sound
+                        long[] vibrates = {0,1000,1000,1000};//不震，震，不震，震.....
+                        notification.vibrate = vibrates;//add shake
 
-                        manager.notify(1,notification);
+                        manager.notify(1, notification);
                         break;
                     default:
                         break;

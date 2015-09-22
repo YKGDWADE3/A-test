@@ -17,6 +17,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".NotificationActivity"></activity>
+
     </application>
+    <uses-permission android:name="android.permission.VIBRATE"/>//震动允许注册
 
 </manifest>
