@@ -24,12 +24,14 @@ public class MainActivity extends Activity {
     private Button takePhoto;
     private ImageView picture;
     private Uri imageUri;
+    private Button chooseFromAlbum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         takePhoto =(Button) findViewById(R.id.take_photo);
+        chooseFromAlbum = (Button) findViewById(R.id.choose_from_album);
         picture = (ImageView) findViewById(R.id.picture);
         takePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,6 +49,27 @@ public class MainActivity extends Activity {
                 Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
                 intent.putExtra(MediaStore.EXTRA_OUTPUT,imageUri);//指定图片的输出地址
                 startActivityForResult(intent,TAKE_PHOTO);//启动相机程序
+            }
+        });
+        chooseFromAlbum.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                File outputImage = new File(Environment.getExternalStorageDirectory(),"outputImage.jpg");
+                try{
+                    if (outputImage.exists()){
+                        outputImage.delete();
+                    }
+                    outputImage.createNewFile();
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
+                imageUri = Uri.fromFile(outputImage);
+                Intent intent =new Intent("android.intent.action.GET_CONTENT");
+                intent.setType("image/*");
+                intent.putExtra("crop", true);
+                intent.putExtra("scale", true);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT,imageUri);
+                startActivityForResult(intent,CROP_PHOTO);
             }
         });
     }
