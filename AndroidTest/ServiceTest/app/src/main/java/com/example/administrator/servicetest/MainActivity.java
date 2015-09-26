@@ -7,6 +7,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.test.ServiceTestCase;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +19,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private Button bindService;
     private Button unbindService;
     private Myservice.DownloadBinder downloadBinder;
+    private Button startMyIntentService;
     private ServiceConnection connection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
@@ -44,6 +46,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
         unbindService = (Button) findViewById(R.id.unbind_service);
         bindService.setOnClickListener(this);
         unbindService.setOnClickListener(this);
+        startMyIntentService = (Button) findViewById(R.id.start_intent_service);
+        startMyIntentService.setOnClickListener(this);
     }
     @Override
     public void onClick(View view){
@@ -63,6 +67,10 @@ public class MainActivity extends Activity implements View.OnClickListener{
             case R.id.unbind_service:
                 unbindService(connection);
                 break;
+            case R.id.start_intent_service:
+                Log.d("MainActivity","Thread id is "+Thread.currentThread().getId());
+                Intent intentService = new Intent(this,MyIntentSercice.class);
+                startService(intentService);
             default:
                 break;
         }
