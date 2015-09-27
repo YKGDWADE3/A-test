@@ -18,6 +18,8 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
@@ -27,6 +29,8 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import javax.xml.parsers.SAXParserFactory;
 
 public class MainActivity extends Activity implements View.OnClickListener{
     public static final int SHOW_RESPONSE = 0;
@@ -68,7 +72,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
                     if (httpResponse.getStatusLine().getStatusCode()==200){
                         HttpEntity entity = httpResponse.getEntity();
                         String response = EntityUtils.toString(entity, "utf-8");
-                        parseXMLWithPull(response);
+                        parseXMLWithSAX(response);
                     }
                 }catch(Exception e){
                     e.printStackTrace();
@@ -76,41 +80,13 @@ public class MainActivity extends Activity implements View.OnClickListener{
             }
         }).start();
     }
-    private void parseXMLWithPull(String xmlData){
+    private void parseXMLWithSAX(String xmlData){
         try{
-            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();//获得实例
-            XmlPullParser xmlPullParser = factory.newPullParser();//借助实例得到对象
-            xmlPullParser.setInput(new StringReader(xmlData));//开始解析
-            int eventType = xmlPullParser.getEventType();//当前解析事件
-            String id ="";
-            String name ="";
-            String version = "";
-            while (eventType!=XmlPullParser.END_DOCUMENT/*代表文件的结束*/){
-                String nodeName = xmlPullParser.getName();
-                switch (eventType){
-                    case XmlPullParser.START_TAG/*标签的开始*/:{
-                        if ("id".equals(nodeName)){
-                            id = xmlPullParser.nextText();
-                        }else if("name".equals(nodeName)){
-                            name = xmlPullParser.nextText();
-                        }else if ("version".equals(nodeName)){
-                            version = xmlPullParser.nextText();
-                        }
-                        break;
-                    }
-                    case XmlPullParser.END_TAG/*标签的结束*/:{
-                        if ("app".equals(nodeName)){
-                            Log.d("MainActivity","id is "+id);
-                            Log.d("MainActivity","name is "+name);
-                            Log.d("MainActivity","version is "+version );
-                        }
-                        break;
-                    }
-                    default:
-                        break;
-                }
-                eventType = xmlPullParser.next();
-            }
+            SAXParserFactory factory = SAXParserFactory.newInstance();
+            XMLReader xmlReader = factory.newSAXParser().getXMLReader();
+            ContentHandler handler = new ContentHandler();
+            xmlReader.setContentHandler(handler);
+            xmlReader.parse(new InputSource(new StringReader(xmlData)));
         }catch(Exception e){
             e.printStackTrace();
         }
