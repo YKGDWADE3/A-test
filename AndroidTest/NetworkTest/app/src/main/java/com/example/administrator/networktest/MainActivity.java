@@ -12,12 +12,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xmlpull.v1.XmlPullParser;
@@ -29,6 +34,7 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 
 import javax.xml.parsers.SAXParserFactory;
 
@@ -66,13 +72,13 @@ public class MainActivity extends Activity implements View.OnClickListener{
             public void run() {
 
                 try{
-                    HttpClient httpClient = new DefaultHttpClient();
-                    HttpGet httpGet = new HttpGet("http://192.168.191.1/get_data.xml");
-                    HttpResponse httpResponse = httpClient.execute(httpGet);
-                    if (httpResponse.getStatusLine().getStatusCode()==200){
-                        HttpEntity entity = httpResponse.getEntity();
-                        String response = EntityUtils.toString(entity, "utf-8");
-                        parseXMLWithSAX(response);
+                    HttpClient httpClient = new DefaultHttpClient();//创建一个client实例
+                    HttpGet httpGet = new HttpGet("http://192.168.191.1/get_data.json");//从这个地方拿数据
+                    HttpResponse httpResponse = httpClient.execute(httpGet);//使用client实例执行拿数据的地方返回一个response
+                    if (httpResponse.getStatusLine().getStatusCode()==200){//如果编码什么的是200
+                        HttpEntity entity = httpResponse.getEntity();//创建一个可以搜集数据的实例，通过response
+                        String response = EntityUtils.toString(entity,"utf-8");//将搜集的东西按照utf-8转码
+                        parseXMLWithGSON(response);
                     }
                 }catch(Exception e){
                     e.printStackTrace();
@@ -80,13 +86,18 @@ public class MainActivity extends Activity implements View.OnClickListener{
             }
         }).start();
     }
-    private void parseXMLWithSAX(String xmlData){
+    private void parseXMLWithGSON(String jsonData){
         try{
-            SAXParserFactory factory = SAXParserFactory.newInstance();
-            XMLReader xmlReader = factory.newSAXParser().getXMLReader();
-            ContentHandler handler = new ContentHandler();
-            xmlReader.setContentHandler(handler);
-            xmlReader.parse(new InputSource(new StringReader(xmlData)));
+            Gson gson = new Gson();
+            //TypeToken 将期望解析成的数据类型传入到 fromJson()方法中，下面只针对数组数据
+            //如果是一个简单的数据只需 App app = gson.fromJson(jsonData,App.class)
+            List<App> appList = gson.fromJson(jsonData,new TypeToken<List<App>>() {}.getType());
+            for (App app:appList){
+                Log.d("MainActivity","id is "+app.getId());
+                Log.d("MainActivity","name is "+app.getName());
+                Log.d("MainActivity","version is" +app.getVersion());
+            }
+
         }catch(Exception e){
             e.printStackTrace();
         }
